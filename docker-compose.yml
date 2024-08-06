@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  express-api:
+    build: ./llm_node
+    restart: always
+    container_name: express-api
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: myuser
+      DB_PASS: ZnMMBGDFXZR5u2J
+      DB_NAME: conversation_db
+      LLM_HOST: python
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - python
+
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    container_name: postgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: ZnMMBGDFXZR5u2J
+      POSTGRES_DB: conversation_db
+    ports:
+      - "5432:5432"
+
+  python:
+    build: ./llm_python
+    image: flask
+    restart: always
+    container_name: python
+    environment: 
+      HUGGINGFACE_API_TOKEN: hf_........ //fill this one up
+    ports:
+      - "5000:5000"
